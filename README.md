@@ -20,90 +20,45 @@
 
 ---
 
-## 🚀 Installation
+## 🚀 How to Install & Start Chatting
 
-> **Prerequisites:** [Node.js](https://nodejs.org) v20 or higher and npm.
+### 1. Install the CLI
+
+> **Requires:** [Node.js](https://nodejs.org) v20 or higher
 
 ```bash
 npm install -g shelltalk-cli
 ```
 
-That's it! The `shelltalk` command is now available globally.
-
----
-
-## ⚙️ Setup (One-Time)
-
-ShellTalk uses **Supabase** as its backend. You need to point it to a Supabase project.
-
-### Option A — Use the hosted instance (if provided by the maintainer)
-
-The maintainer may share a pre-configured `.env` file or environment values. Ask them for:
-
-| Variable | Description |
-|---|---|
-| `SUPABASE_URL` | Your Supabase project URL |
-| `SUPABASE_ANON_KEY` | Your Supabase anon/public key |
-| `SHELLTALK_ENCRYPTION_KEY` | A shared 32-character secret for message encryption |
-
-Set them in your shell profile (`~/.bashrc`, `~/.zshrc`, etc.):
-
-```bash
-export SUPABASE_URL="https://xxxx.supabase.co"
-export SUPABASE_ANON_KEY="eyJ..."
-export SHELLTALK_ENCRYPTION_KEY="your-32-character-secret-key-here"
-```
-
-Or create a `.env` file in your working directory:
-
-```env
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_ANON_KEY=eyJ...
-SHELLTALK_ENCRYPTION_KEY=your-32-character-secret-key-here
-```
-
-### Option B — Self-host your own Supabase backend
-
-1. Create a free project at [supabase.com](https://supabase.com).
-2. In the Supabase SQL Editor, run the schema from [`supabase/schema.sql`](./supabase/schema.sql) to create all required tables.
-3. Copy your **Project URL** and **anon public key** from `Settings → API`.
-4. Set the three environment variables above.
-
-> **For production email OTP delivery**, configure a Custom SMTP provider in Supabase (Brevo, Resend, or SendGrid all work with the free tier).
-
----
-
-## 🗣️ Start Chatting — Step by Step
-
-### Step 1 — Login
+### 2. Login with your email
 
 ```bash
 shelltalk login
 ```
 
-Enter your email address. You'll receive a one-time password (OTP) in your inbox. Paste it in the terminal to authenticate. No password needed, ever.
+Enter your email — you'll get a one-time password (OTP) in your inbox. Paste it in the terminal. No password needed, ever.
 
-### Step 2 — Set up your profile
+### 3. Set up your profile (first time only)
 
 ```bash
 shelltalk setup
 ```
 
-Choose your **username** (public), **display name**, and optionally your **phone number** (stored encrypted). This only needs to be done once.
+Pick a **username** (public), a **display name**, and optionally your **phone number** (stored encrypted).
 
-### Step 3 — Launch the shell
+### 4. Start chatting!
 
 ```bash
 shelltalk
 ```
 
-You're in! ShellTalk opens an interactive shell prompt.
+You're in the ShellTalk shell. Add friends, send messages, and chat — all from your terminal.
 
 ---
 
-## 💡 Commands Reference
+## 💡 Commands
 
-Once inside the ShellTalk shell (`shelltalk`):
+Once inside the ShellTalk shell:
 
 | Command | Description |
 |---|---|
@@ -117,24 +72,24 @@ Once inside the ShellTalk shell (`shelltalk`):
 | `block @username` | Block a user |
 | `unblock @username` | Unblock a user |
 | `cd @username` | Open a chat with a friend |
-| `cd ..` | Close the current chat |
+| `cd ..` | Go back to the friends list |
 | `me` | Show your profile info |
 | `clear` | Clear the terminal |
 | `help` | Show all commands |
-| `logout` | Log out of your account |
+| `logout` | Log out |
 | `exit` | Exit ShellTalk |
 
 ---
 
 ## 🔐 Privacy & Security
 
-- **Friend-gated messaging** — users can only message you after you accept their friend request.
-- **AES-256-GCM encryption** — message bodies and phone numbers are encrypted before being saved to the database. Plain text is never stored.
-- **Usernames are public** — they are your identity. Everything else is private.
-- **Read receipts** indicate active engagement, not just app presence:
-  - `✓` — sent
-  - `✓✓` — delivered
-  - `✓✓` *(green)* — read (only when the recipient opens `cd @username`)
+- **Friend-gated messaging** — users can only message you after you accept their request
+- **AES-256-GCM encryption** — messages and phone numbers are encrypted before saving. Plain text is never stored
+- **Usernames are public** — everything else is private
+- **Read receipts** reflect active engagement:
+  - `✓` sent
+  - `✓✓` delivered
+  - `✓✓` *(green)* read (only when the recipient opens `cd @username`)
 
 ---
 
@@ -142,44 +97,13 @@ Once inside the ShellTalk shell (`shelltalk`):
 
 | Issue | Fix |
 |---|---|
-| Login OTP not arriving | Check your spam folder, or configure Custom SMTP in Supabase |
+| OTP not arriving | Check your spam folder |
 | `JWT expired` error | Delete `~/.config/shelltalk-cli/config.json` and run `shelltalk login` again |
-| Profile setup loops forever | Ensure username is 3–20 chars, alphanumeric + underscores only |
-| Can't add friends | Make sure your profile setup is complete (`shelltalk setup`) |
-| `shelltalk` not found | Ensure npm global bin is in your `$PATH` (run `npm bin -g`) |
-
----
-
-## 🙋 FAQ
-
-**Q: Do I need an account on a website?**  
-A: No. Just install the CLI, set the environment variables, and log in with your email.
-
-**Q: Can I use this on Windows, Mac, or Linux?**  
-A: Yes! Any platform that runs Node.js v20+ is supported.
-
-**Q: Is my chat history stored?**  
-A: Messages are stored encrypted in Supabase. Only someone with the correct `SHELLTALK_ENCRYPTION_KEY` can decrypt them.
-
-**Q: How do I switch accounts?**  
-A: Run `shelltalk logout` then `shelltalk login`.
-
-**Q: Can I run shelltalk from any directory?**  
-A: Yes — sessions are stored globally in `~/.config/shelltalk-cli/config.json`.
-
----
-
-## 📦 Tech Stack
-
-- **[Supabase](https://supabase.com)** — Auth, database, and realtime subscriptions
-- **[Chalk](https://github.com/chalk/chalk)** — Terminal colors
-- **[Inquirer](https://github.com/SBoudrias/Inquirer.js)** — Interactive prompts
-- **[Commander](https://github.com/tj/commander.js)** — CLI argument parsing
-- **[Conf](https://github.com/sindresorhus/conf)** — Persistent local config
-- **[Ora](https://github.com/sindresorhus/ora)** — Spinners
+| Profile setup loops | Username must be 3–20 chars, alphanumeric + underscores only |
+| `shelltalk` not found | Make sure npm global bin is in your `$PATH` — run `npm bin -g` |
 
 ---
 
 ## 📄 License
 
-MIT © [Yagnik Patel](https://github.com/yagnikpatel)
+MIT © [Yagnik Patel](https://github.com/yaagnik-patel)
